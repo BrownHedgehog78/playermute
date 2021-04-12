@@ -10,21 +10,13 @@ minetest.register_chatcommand("mute", {
 	privs = {kick = true},
 	func = function(name, param, n)
 		local player = minetest.get_player_by_name(param)
-		local privs = minetest.get_player_privs(param)
+		if not player then return false, param .. " is not online or does not exist!" end
 		local admin = core.settings:get("name")
-		minetest.set_player_privs(param, privs)
-		minetest.get_player_by_name(name)
-			if param == admin then
-			minetest.chat_send_player(name, "You mute can't the admin!")
-			elseif param == name then
-			minetest.chat_send_player(name, "You can't mute yourself!")
-			elseif player then
-			muted_players[param] = true
-			minetest.chat_send_player(name, "Muted " .. param .. ".")
-			minetest.chat_send_player(param, "You were muted by " .. name .. ".")
-			elseif not player then
-			minetest.chat_send_player(name, param .. " is not online or does not exist!")
-		end
+		if param == admin then return false, "You mute can't the admin!"
+		elseif param == name then return false, "You can't mute yourself!" end
+		muted_players[param] = true
+		minetest.chat_send_player(name, "Muted " .. param .. ".")
+		minetest.chat_send_player(param, "You were muted by " .. name .. ".")
 	end
 })
 
@@ -51,8 +43,8 @@ minetest.register_chatcommand("unmute", {
 
 minetest.register_on_chat_message(function(name, n)
 	if muted_players[name] then
-	minetest.chat_send_player(name, "You're muted so you can't talk")
-	return true
+		minetest.chat_send_player(name, "You're muted so you can't talk")
+		return true
 	end
 end)
 
