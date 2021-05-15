@@ -15,7 +15,7 @@ minetest.register_chatcommand("mute", {
 		minetest.set_player_privs(param, privs)
 		minetest.get_player_by_name(name)
 			if param == admin then
-			minetest.chat_send_player(name, "You mute can't the admin!")
+			minetest.chat_send_player(name, "You can't mute the admin!")
 			elseif param == name then
 			minetest.chat_send_player(name, "You can't mute yourself!")
 			elseif player then
