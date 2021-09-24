@@ -1,4 +1,4 @@
-# Mute
+# Player Mute
 
 This mod allows you to mute players in minetest.
 
