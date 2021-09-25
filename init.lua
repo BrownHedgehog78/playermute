@@ -76,9 +76,17 @@ minetest.register_on_chat_message(function(name)
 	end
 end)
 
-minetest.register_on_shutdown(function()
+local function save()
 	storage:set_string("muted_players", minetest.serialize(muted))
-end)
+end
+minetest.register_on_shutdown(save)
+
+-- Save every 15 minutes
+local function safe_after()
+	safe()
+	minetest.after(60 * 15,safe_after())
+end
+minetest.after(60 * 15,safe_after())
 
 -- Privileges
 
