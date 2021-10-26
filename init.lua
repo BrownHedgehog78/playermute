@@ -1,7 +1,12 @@
+playermute = {}
 local storage = minetest.get_mod_storage()
 local muted = {}
 if storage:contains("muted_players") then
 	muted = minetest.deserialize(storage:get_string("muted_players"))
+end
+
+function playermute.is_muted(name)
+	return muted[name] ~= nil
 end
 
 -- Commands for muting/unmuting players (only their accounts)
@@ -12,7 +17,7 @@ minetest.register_chatcommand("p_mute", {
 	privs = {pmute = true},
 	func = function(name, param)
 		local player = minetest.get_player_by_name(param)
-		if muted[param] == true then
+		if playermute.is_muted(param) then
 			return false, "Player " .. param .. " is already muted"
 		end
 
@@ -38,7 +43,7 @@ minetest.register_chatcommand("p_unmute", {
 	privs = {pmute = true},
 	func = function(name, param)
 		local player = minetest.get_player_by_name(param)
-		if muted[param] ~= true then
+		if not playermute.is_muted(param) then
 			return false, "Player " .. param .. " is not muted"
 		end
 
@@ -61,7 +66,7 @@ minetest.register_on_chatcommand(function(name, command, params)
 		return
 	end
 
-	if muted[name] == true and not minetest.check_player_privs(name, {antimute = true}) then
+	if playermute.is_muted(name) and not minetest.check_player_privs(name, {antimute = true}) then
 		minetest.chat_send_player(name, "You're muted, you can't use this command")
 		return true
 	end
@@ -70,7 +75,7 @@ end)
 -- Functions
 
 minetest.register_on_chat_message(function(name)
-	if muted[name] == true and not minetest.check_player_privs(name, {antimute = true}) then
+	if playermute.is_muted(name) and not minetest.check_player_privs(name, {antimute = true}) then
 		minetest.chat_send_player(name, "You're muted, you can't talk")
 		return true
 	end
